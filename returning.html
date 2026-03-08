@@ -189,7 +189,7 @@
 
     <div class="footer-btns">
       <button class="btn-gray" id="reset-button" onclick="resetForm()">リセット</button>
-      <button class="btn-red" id="close-button" onclick="window.open('', '_self').close();">閉じる</button>
+      <button class="btn-red" id="close-button" onclick="closeApp()">閉じる</button>
     </div>
   </div>
 
@@ -215,7 +215,7 @@
       const btn = document.getElementById('scan-btn');
       
       if (isScanning) {
-         Quagga.stop();
+        Quagga.stop();
         box.style.display = 'none';
         btn.innerText = "バーコードをスキャン";
         isScanning = false;
@@ -236,7 +236,6 @@
           constraints: { width: 1280, height: 720, facingMode: "environment" }
         },
         decoder: { 
-          // NW-7 (codabar) を最優先に設定
           readers: ["codabar_reader", "code_128_reader", "ean_reader"] 
         },
         locate: true
@@ -266,6 +265,7 @@
 
     async function handleBookInput(bookId) {
       if (!bookId) return;
+      // 数値以外のプレフィックスなどを除去
       bookId = bookId.replace(/^[a-zA-Z]+|[a-zA-Z]+$/g, '');
       document.getElementById('book-id').value = bookId;
 
@@ -276,7 +276,7 @@
       setMessage("貸出記録を確認中...", "");
       const res = await callGas('getUnreturnedBooksByBookId', { bookId: bookId });
       if (res.success && res.data) {
-        const nameValue = res.data.userName || res.data.name || res.data.利用者名 || "不明な利用者";
+        const nameValue = res.data.userName || res.data.name || "不明な利用者";
         returnQueue.push({
           bookId: bookId,
           bookTitle: res.data.bookTitle,
@@ -288,7 +288,7 @@
         document.getElementById('book-id').value = "";
         autoScroll('submit-btn');
       } else {
-        setMessage(res.message || "貸出中のではないか、記録が見つかりません", "error");
+        setMessage(res.message || "貸出中の記録が見つかりません", "error");
       }
     }
 
@@ -334,18 +334,36 @@
     }
 
     function resetForm() { location.reload(); }
+
     function setMessage(text, type) {
       const msgDiv = document.getElementById('message');
       msgDiv.innerText = text;
       msgDiv.className = type;
     }
+
     function autoScroll(id) {
       setTimeout(() => {
         const el = document.getElementById(id);
         if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }, 100);
     }
+
+    // アプリを閉じる処理
+    function closeApp() {
+      // 1. スクリプトで開かれた窓なら閉じる
+      const closed = window.close();
+      
+      // 2. 閉じられなかった場合のバックアップ案（履歴で戻るなど）
+      setTimeout(() => {
+        if (!window.closed) {
+          setMessage("「閉じる」ボタンが制限されています。ブラウザのタブを手動で閉じてください。", "error");
+          // 履歴があれば戻る
+          if (window.history.length > 1) {
+            window.history.back();
+          }
+        }
+      }, 500);
+    }
   </script>
 </body>
 </html>
-
