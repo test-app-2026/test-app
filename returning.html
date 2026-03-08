@@ -143,7 +143,7 @@
       width: 30px;
       height: 30px;
       cursor: pointer;
-      font-size: 10px; /* 文字サイズを小さく調整 */
+      font-size: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -235,7 +235,10 @@
           target: document.querySelector('#scanner-container'),
           constraints: { width: 1280, height: 720, facingMode: "environment" }
         },
-        decoder: { readers: ["code_128_reader", "ean_reader", "codabar_reader"] },
+        decoder: { 
+          // NW-7 (codabar) を最優先に設定
+          readers: ["codabar_reader", "code_128_reader", "ean_reader"] 
+        },
         locate: true
       }, (err) => {
         if (err) {
@@ -263,8 +266,6 @@
 
     async function handleBookInput(bookId) {
       if (!bookId) return;
-
-      // 前後のアルファベットを削除
       bookId = bookId.replace(/^[a-zA-Z]+|[a-zA-Z]+$/g, '');
       document.getElementById('book-id').value = bookId;
 
@@ -272,14 +273,10 @@
         setMessage("この本は既にリストにあります", "error");
         return;
       }
-
       setMessage("貸出記録を確認中...", "");
-      
       const res = await callGas('getUnreturnedBooksByBookId', { bookId: bookId });
-
       if (res.success && res.data) {
         const nameValue = res.data.userName || res.data.name || res.data.利用者名 || "不明な利用者";
-        
         returnQueue.push({
           bookId: bookId,
           bookTitle: res.data.bookTitle,
@@ -298,12 +295,10 @@
     function updateListUI() {
       const listDiv = document.getElementById('book-list');
       const section = document.getElementById('return-list-section');
-      
       if (returnQueue.length === 0) {
         section.style.display = 'none';
         return;
       }
-
       section.style.display = 'block';
       listDiv.innerHTML = returnQueue.map((b, index) => `
         <div class="book-card">
@@ -311,7 +306,7 @@
           <strong>📖 ${b.bookTitle}</strong>
           <div class="info-line">蔵書ID: ${b.bookId}</div>
           <div class="info-line">利用者: ${b.userName} さん</div>
-          <div class="info-line">返返期限: ${b.dueDate}</div>
+          <div class="info-line">返却期限: ${b.dueDate}</div>
         </div>
       `).join('');
     }
@@ -325,10 +320,8 @@
       const btn = document.getElementById('submit-btn');
       btn.disabled = true;
       setMessage("返却処理を実行中...", "");
-
       const bookIds = returnQueue.map(b => b.bookId);
       const res = await callGas('processBulkReturn', { bookIds: bookIds });
-
       if (res.success) {
         setMessage(res.message, "success");
         returnQueue = [];
