@@ -297,7 +297,10 @@
       document.getElementById('scan-book-btn').innerText = "スキャン停止";
       Quagga.init({
         inputStream: { name: "Live", type: "LiveStream", target: container, constraints: { facingMode: "environment" } },
-        decoder: { readers: ["code_128_reader", "ean_reader", "codabar_reader"] }
+        decoder: { 
+          // NW-7 (codabar) を最優先に設定
+          readers: ["codabar_reader", "code_128_reader", "ean_reader"] 
+        }
       }, (err) => {
         if (err) { alert(err); return; }
         Quagga.start();
@@ -327,7 +330,6 @@
       const res = await callGas('getUserInfo', { userId: val });
       
       if (res.success) {
-        // 利用者名を確実にセット (res.name, res.userName, res.利用者名 のいずれかから取得)
         const nameValue = res.name || res.userName || res.利用者名 || "不明な利用者";
         currentUser = { 
           userId: val,
@@ -392,19 +394,15 @@
       btn.disabled = true;
       setMessage("貸出を登録中...", "");
 
-      // 送信データの構築
       const bulkData = scannedBooks.map(b => ({ 
         bookId: b.bookId, 
         bookTitle: b.bookTitle,
         userId: currentUser.userId,
-        userName: currentUser.userName, // ここがH列に対応
+        userName: currentUser.userName,
         grade: currentUser.grade,
         class: currentUser.class,
         number: currentUser.number
       }));
-
-      // デバッグ用ログ
-      console.log("送信データ:", bulkData);
 
       const res = await callGas('processBulkLending', { bulkData });
 
