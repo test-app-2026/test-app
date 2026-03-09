@@ -193,7 +193,7 @@
     <h1>進路図書貸出アプリ<br>【貸出ページ】</h1>
     
     <div class="section" id="user-section">
-      <label>1. 生徒IDカードのQRコード（生徒ID）の確認</label>
+      <label>1. 生徒IDカード（利用者ID）の確認</label>
       <button class="btn-blue" id="scan-user-btn" onclick="toggleUserScanner()">QRコードをスキャン</button>
       <div id="user-scanner-container" class="scanner-box">
         <canvas id="qr-canvas" hidden></canvas>
@@ -204,7 +204,7 @@
     </div>
 
     <div class="section disabled" id="book-section">
-      <label>2. 貸出書籍のバーコード（蔵書ID）の確認（上限2冊）</label>
+      <label>2. 貸出図書（蔵書ID）の確認（上限2冊）</label>
       <div id="limit-msg" class="limit-info">※貸出上限の2冊に達しました</div>
       <button class="btn-blue" id="scan-book-btn" onclick="toggleBookScanner()">バーコードをスキャン</button>
       <div id="book-scanner-container" class="scanner-box"></div>
@@ -446,4 +446,3 @@
   </script>
 </body>
 </html>
-
