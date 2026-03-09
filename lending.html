@@ -193,18 +193,18 @@
     <h1>進路図書貸出アプリ<br>【貸出ページ】</h1>
     
     <div class="section" id="user-section">
-      <label>1. 利用者IDの確認</label>
+      <label>1. 生徒IDカードのQRコード（生徒ID）の確認</label>
       <button class="btn-blue" id="scan-user-btn" onclick="toggleUserScanner()">QRコードをスキャン</button>
       <div id="user-scanner-container" class="scanner-box">
         <canvas id="qr-canvas" hidden></canvas>
       </div>
       <input type="text" id="user-id" placeholder="利用者IDをスキャンまたは入力してください" onkeypress="if(event.key==='Enter') handleUserInput(this.value)">
-      <button class="btn-gray" onclick="handleUserInput(document.getElementById('user-id').value)">利用者検索</button>
+      <button class="btn-gray" onclick="handleUserInput(document.getElementById('user-id').value)">利用者IDの確認</button>
       <div id="user-info-display" class="user-display" style="display:none;"></div>
     </div>
 
     <div class="section disabled" id="book-section">
-      <label>2. 蔵書IDを確認（上限2冊）</label>
+      <label>2. 貸出書籍のバーコード（蔵書ID）の確認（上限2冊）</label>
       <div id="limit-msg" class="limit-info">※貸出上限の2冊に達しました</div>
       <button class="btn-blue" id="scan-book-btn" onclick="toggleBookScanner()">バーコードをスキャン</button>
       <div id="book-scanner-container" class="scanner-box"></div>
@@ -338,10 +338,10 @@
           number: res.number
         };
         const display = document.getElementById('user-info-display');
-        display.innerText = `利用者: ${currentUser.userName} さん`;
+        display.innerText = `${currentUser.userName} さん`;
         display.style.display = 'block';
         document.getElementById('book-section').classList.remove('disabled');
-        setMessage("利用者を確認しました。", "success");
+        setMessage("利用者IDを確認しました。", "success");
         autoScroll('user-info-display');
       } else {
         setMessage(res.message, "error");
@@ -383,7 +383,7 @@
       limitMsg.style.display = isFull ? 'block' : 'none';
     }
 
-    function removeBook(index) { scannedBooks.splice(index, 1); updateBookList(); checkReady(); }
+    function removeBook(index) { scannedBooks.splice(index, 1); updateBookList(); checkReady(); setMessage("取り消しました", ""); }
     function checkReady() { document.getElementById('submit-btn').disabled = !(scannedBooks.length > 0 && currentUser); }
 
     async function submitLending() {
@@ -446,3 +446,4 @@
   </script>
 </body>
 </html>
+
