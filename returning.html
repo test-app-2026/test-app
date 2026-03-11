@@ -302,7 +302,7 @@
       section.style.display = 'block';
       listDiv.innerHTML = returnQueue.map((b, index) => `
         <div class="book-card">
-          <button class="remove-btn" id="remove-btn" onclick="removeFromQueue(${index})">取消</button>
+          <button class="remove-btn" onclick="removeFromQueue(${index})">取消</button>
           <strong>📖 ${b.bookTitle}</strong>
           <div class="info-line">蔵書ID: ${b.bookId}</div>
           <div class="info-line">利用者: ${b.userName} さん</div>
@@ -329,7 +329,7 @@
         document.getElementById('return-list-section').disabled = true;
         document.getElementById('scan-btn').disabled = true;
         document.getElementById('search-btn').disabled = true;
-        document.getElementById('remove-btn').disabled = true;
+        document.getElementsByClassName('remove-btn').disabled = true;
         autoScroll('close-button');
       } else {
         setMessage("エラー: " + res.message, "error");
@@ -371,5 +371,6 @@
   </script>
 </body>
 </html>
+
 
 
