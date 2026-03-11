@@ -210,7 +210,7 @@
         <canvas id="qr-canvas" hidden></canvas>
       </div>
       <input type="text" id="user-id" placeholder="利用者IDをスキャンまたは入力してください" onkeypress="if(event.key==='Enter') handleUserInput(this.value)">
-      <button class="btn-gray" onclick="handleUserInput(document.getElementById('user-id').value)">利用者IDの確認</button>
+      <button class="btn-gray" id="search-user-btn" onclick="handleUserInput(document.getElementById('user-id').value)">利用者IDの確認</button>
       <div id="user-info-display" class="user-display" style="display:none;"></div>
     </div>
 
@@ -433,8 +433,13 @@
         currentUser = null;
         document.getElementById('user-info-display').style.display = 'none';
         document.getElementById('book-info-display').style.display = 'none';
-        //document.getElementById('book-section').classList.add('disabled');
+        document.getElementById('scan-user-btn').disabled =true;
+        document.getElementById('search-user-btn').disabled =true;
+        document.getElementById('scan-book-btn').disabled =true;
+        document.getElementById('add-book-btn').disabled =true;
+        document.getElementById('book-section').classList.add('disabled');
         document.getElementById('user-id').value = "";
+        ★
       } else {
         setMessage("エラー: " + res.message, "error");
         btn.disabled = false;
@@ -468,4 +473,5 @@
   </script>
 </body>
 </html>
+
 
