@@ -325,7 +325,9 @@
 
     async function handleUserInput(val) {
       if (!val) return;
-      setMessage("利用者情報を確認中...", "");
+      display.innerText = "利用者IDを確認中...";
+      display.style.display = 'block';
+      setMessage("利用者IDを確認中...", "");
       const res = await callGas('getUserInfo', { userId: val });
       
       if (res.success) {
@@ -391,7 +393,7 @@
       
       const btn = document.getElementById('submit-btn');
       btn.disabled = true;
-      setMessage("貸出を登録中...", "");
+      setMessage("貸出処理を実行中...", "");
 
       const bulkData = scannedBooks.map(b => ({ 
         bookId: b.bookId, 
@@ -446,3 +448,4 @@
   </script>
 </body>
 </html>
+
