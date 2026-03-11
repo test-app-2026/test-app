@@ -307,6 +307,7 @@
       const container = document.getElementById('book-scanner-container');
       container.style.display = 'block';
       document.getElementById('scan-book-btn').innerText = "スキャン停止";
+      autoScroll('book-scanner-container');
       Quagga.init({
         inputStream: { name: "Live", type: "LiveStream", target: container, constraints: { facingMode: "environment" } },
         decoder: { 
@@ -466,6 +467,7 @@
   </script>
 </body>
 </html>
+
 
 
 
