@@ -384,7 +384,7 @@
         setMessage("書籍を追加しました。", "");
         checkReady();
         autoScroll('submit-btn');
-      } else { setMessage(res.message, "error"); }
+      } else { setMessage(res.message, "error"); display.innerText = "この蔵書IDは確認できません。";}
     }
 
     function updateBookList() {
@@ -468,6 +468,7 @@
   </script>
 </body>
 </html>
+
 
 
 
