@@ -378,10 +378,8 @@
         scannedBooks.push({ bookId: val, bookTitle: res.title });
         updateBookList();
         document.getElementById('book-id').value = "";
-        const display = document.getElementById('book-info-display');
-        display.innerText = "書籍を追加しました...";
-        display.style.display = 'block';
-        setMessage(`書籍を追加しました。`, "success");
+        document.getElementById('book-info-display').style.display = 'none';
+        setMessage("書籍を追加しました。", "");
         checkReady();
         autoScroll('submit-btn');
       } else { setMessage(res.message, "error"); }
@@ -468,6 +466,7 @@
   </script>
 </body>
 </html>
+
 
 
 
