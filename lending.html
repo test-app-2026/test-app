@@ -171,6 +171,17 @@
       border: 1px solid #b8daff;
     }
 
+    .book-display {
+      background: #e7f3ff;
+      padding: 12px;
+      border-radius: 6px;
+      color: #0056b3;
+      margin-bottom: 15px;
+      font-weight: bold;
+      font-size: 16px;
+      border: 1px solid #b8daff;
+    }
+    
     .footer-btns {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -210,6 +221,7 @@
       <div id="book-scanner-container" class="scanner-box"></div>
       <input type="text" id="book-id" placeholder="蔵書IDをスキャンまたは入力してください" onkeypress="if(event.key==='Enter') handleBookInput(this.value)">
       <button class="btn-gray" id="add-book-btn" onclick="handleBookInput(document.getElementById('book-id').value)">貸出リストに追加</button>
+      <div id="book-info-display" class="book-display" style="display:none;"></div>
       <div id="book-list"></div>
     </div>
 
@@ -357,12 +369,18 @@
       val = val.replace(/^[a-zA-Z]+|[a-zA-Z]+$/g, '');
       document.getElementById('book-id').value = val;
       if (scannedBooks.find(b => b.bookId === val)) { setMessage("既にリストにあります", "error"); return; }
-      setMessage("書籍情報を取得中...", "");
+      const display = document.getElementById('book-info-display');
+      display.innerText = "蔵書を確認中...";
+      display.style.display = 'block';
+      setMessage("蔵書を確認中...", "");
       const res = await callGas('getBookDetails', { bookId: val });
       if (res.success) {
         scannedBooks.push({ bookId: val, bookTitle: res.title });
         updateBookList();
         document.getElementById('book-id').value = "";
+        const display = document.getElementById('book-info-display');
+        display.innerText = "書籍を追加しました...";
+        display.style.display = 'block';
         setMessage(`書籍を追加しました。`, "success");
         checkReady();
         autoScroll('submit-btn');
@@ -414,6 +432,7 @@
         updateBookList();
         currentUser = null;
         document.getElementById('user-info-display').style.display = 'none';
+        document.getElementById('book-info-display').style.display = 'none';
         document.getElementById('book-section').classList.add('disabled');
         document.getElementById('user-id').value = "";
       } else {
@@ -449,5 +468,6 @@
   </script>
 </body>
 </html>
+
 
 
