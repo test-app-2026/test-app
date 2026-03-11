@@ -329,7 +329,9 @@
         document.getElementById('return-list-section').disabled = true;
         document.getElementById('scan-btn').disabled = true;
         document.getElementById('search-btn').disabled = true;
-        document.getElementsByClassName('remove-btn')[0].disabled = true;
+        document.querySelectorAll('.remove-btn').forEach(x=>{
+        x.disabled = true;
+        });
         autoScroll('close-button');
       } else {
         setMessage("エラー: " + res.message, "error");
@@ -371,6 +373,7 @@
   </script>
 </body>
 </html>
+
 
 
 
