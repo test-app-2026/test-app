@@ -325,6 +325,7 @@
 
     async function handleUserInput(val) {
       if (!val) return;
+      const display = document.getElementById('user-info-display');
       display.innerText = "利用者IDを確認中...";
       display.style.display = 'block';
       setMessage("利用者IDを確認中...", "");
@@ -448,4 +449,5 @@
   </script>
 </body>
 </html>
+
 
