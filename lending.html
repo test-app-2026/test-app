@@ -428,12 +428,12 @@
 
       if (res.success) {
         setMessage(`${res.message}`, "success");
-        scannedBooks = [];
-        updateBookList();
+        //scannedBooks = [];
+        //updateBookList();
         currentUser = null;
         document.getElementById('user-info-display').style.display = 'none';
         document.getElementById('book-info-display').style.display = 'none';
-        <!-- //document.getElementById('book-section').classList.add('disabled'); -->
+        //document.getElementById('book-section').classList.add('disabled');
         document.getElementById('user-id').value = "";
       } else {
         setMessage("エラー: " + res.message, "error");
@@ -468,3 +468,4 @@
   </script>
 </body>
 </html>
+
