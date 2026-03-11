@@ -324,9 +324,12 @@
       const res = await callGas('processBulkReturn', { bookIds: bookIds });
       if (res.success) {
         setMessage(res.message, "success");
-        returnQueue = [];
-        updateListUI();
+        //returnQueue = [];
+        //updateListUI();
         autoScroll('close-button');
+        document.getElementById('return-list-section').disabled = true;
+        document.getElementById('scan-btn').disabled = true;
+        document.getElementById('search-btn').disabled = true;
       } else {
         setMessage("エラー: " + res.message, "error");
         btn.disabled = false;
@@ -367,3 +370,4 @@
   </script>
 </body>
 </html>
+
