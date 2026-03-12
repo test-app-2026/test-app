@@ -276,7 +276,7 @@
     }
 
     /**
-     * 【修正箇所】蔵書ID入力を受け取り、サーバーからの配列データを処理
+     * 蔵書ID入力を受け取り、サーバーからの配列データを処理
      */
     async function handleBookInput(bookId) {
       if (!bookId) return;
@@ -291,6 +291,7 @@
         // res.data は配列として返ってくる
         const newRecords = Array.isArray(res.data) ? res.data : [res.data];
         let addedCount = 0;
+        let hasMultiple = false; // 重複があるかどうかのフラグ
 
         newRecords.forEach(record => {
           // すでにキューにあるかチェック（IDと利用者の組み合わせで判断）
@@ -302,15 +303,27 @@
               bookTitle: record.bookTitle,
               userName: record.userName || "不明な利用者",
               dueDate: record.dueDate,
-              isMultiple: newRecords.length > 1 // 複数見つかった場合のフラグ
+              isMultiple: newRecords.length > 1 // サーバー側で複数見つかった場合にフラグを立てる
             });
             addedCount++;
+          }
+          
+          // 2件以上のデータがある場合
+          if (newRecords.length > 1) {
+            hasMultiple = true;
           }
         });
 
         if (addedCount > 0) {
           updateListUI();
-          setMessage(`${addedCount}件の記録をリストに追加しました`, "success");
+          
+          // メッセージの組み立て
+          let msg = `${addedCount}件の記録をリストに追加しました。`;
+          if (hasMultiple) {
+            msg += "\n重複の古い未返却記録がありました。古い記録も含めて返却処理を実行してください。";
+          }
+          
+          setMessage(msg, "success");
           document.getElementById('book-id').value = "";
           autoScroll('submit-btn');
         } else {
@@ -399,3 +412,4 @@
   </script>
 </body>
 </html>
+
