@@ -229,6 +229,7 @@
 
       async function fetchBookInfo(isbn) {
         showStatusMessage('書籍検索中...', '');
+        registerButton.scrollIntoView({ behavior: 'smooth', block: 'start' });
         try {
           const response = await fetch(GAS_URL, {
             method: 'POST',
@@ -242,9 +243,6 @@
             resPublisher.value = book.publisher || "";
             resPubdate.value = book.pubdate || "";
             showStatusMessage('情報を取得しました', 'success');
-            
-            // 成功時にスクロール
-            bookInfoArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
           } else {
             showStatusMessage(book.error || '書籍が見つかりません', 'error');
             resIsbn.value = isbn;
@@ -265,7 +263,10 @@
           note: resNote.value.trim()
         };
         if (!data.title) { showStatusMessage('書籍名は必須です', 'error'); return; }
-        
+        registerButton.disabeld = true:
+        bookidScanBtn.disabled = true;
+        isbnScanBtn.disabled = true;
+        searchButton.disbled = true;
         showStatusMessage('登録中...', '');
         try {
           const response = await fetch(GAS_URL, {
@@ -289,6 +290,10 @@
         bookidInput.value = ''; isbnInput.value = ''; resIsbn.value = '';
         resTitle.value = ''; resAuthor.value = ''; resPublisher.value = '';
         resPubdate.value = ''; resNote.value = '';
+        registerButton.disabeld = false:
+        bookidScanBtn.disabled = false;
+        isbnScanBtn.disabled = false;
+        searchButton.disbled = false;
         showStatusMessage('リセットしました', '');
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
@@ -302,4 +307,5 @@
     });
   </script>
 </body>
+
 </html>
