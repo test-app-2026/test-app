@@ -163,6 +163,18 @@
       gap: 15px;
       margin-top: 30px;
     }
+
+    /* 複数見つかった時の警告バッジ */
+    .multiple-badge {
+      display: inline-block;
+      background: #ffc107;
+      color: #000;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
   </style>
 </head>
 <body>
@@ -263,30 +275,47 @@
       });
     }
 
+    /**
+     * 【修正箇所】蔵書ID入力を受け取り、サーバーからの配列データを処理
+     */
     async function handleBookInput(bookId) {
       if (!bookId) return;
       // 数値以外のプレフィックスなどを除去
       bookId = bookId.replace(/^[a-zA-Z]+|[a-zA-Z]+$/g, '');
       document.getElementById('book-id').value = bookId;
 
-      if (returnQueue.find(b => b.bookId === bookId)) {
-        setMessage("この本は既にリストにあります", "error");
-        return;
-      }
       setMessage("貸出記録を確認中...", "");
       const res = await callGas('getUnreturnedBooksByBookId', { bookId: bookId });
+      
       if (res.success && res.data) {
-        const nameValue = res.data.userName || res.data.name || "不明な利用者";
-        returnQueue.push({
-          bookId: bookId,
-          bookTitle: res.data.bookTitle,
-          userName: nameValue,
-          dueDate: res.data.dueDate
+        // res.data は配列として返ってくる
+        const newRecords = Array.isArray(res.data) ? res.data : [res.data];
+        let addedCount = 0;
+
+        newRecords.forEach(record => {
+          // すでにキューにあるかチェック（IDと利用者の組み合わせで判断）
+          const isExist = returnQueue.some(q => q.bookId === bookId && q.userName === record.userName);
+          
+          if (!isExist) {
+            returnQueue.push({
+              bookId: bookId,
+              bookTitle: record.bookTitle,
+              userName: record.userName || "不明な利用者",
+              dueDate: record.dueDate,
+              isMultiple: newRecords.length > 1 // 複数見つかった場合のフラグ
+            });
+            addedCount++;
+          }
         });
-        updateListUI();
-        setMessage("リストに追加しました", "success");
-        document.getElementById('book-id').value = "";
-        autoScroll('submit-btn');
+
+        if (addedCount > 0) {
+          updateListUI();
+          setMessage(`${addedCount}件の記録をリストに追加しました`, "success");
+          document.getElementById('book-id').value = "";
+          autoScroll('submit-btn');
+        } else {
+          setMessage("この記録は既にリストに含まれています", "error");
+        }
       } else {
         setMessage(res.message || "貸出中の記録が見つかりません", "error");
       }
@@ -303,7 +332,8 @@
       listDiv.innerHTML = returnQueue.map((b, index) => `
         <div class="book-card">
           <button class="remove-btn" onclick="removeFromQueue(${index})">取消</button>
-          <strong>📖 ${b.bookTitle}</strong>
+          ${b.isMultiple ? '<span class="multiple-badge">⚠️ 重複貸出記録</span>' : ''}
+          <div><strong>📖 ${b.bookTitle}</strong></div>
           <div class="info-line">蔵書ID: ${b.bookId}</div>
           <div class="info-line">利用者: ${b.userName} さん</div>
           <div class="info-line">返却期限: ${b.dueDate}</div>
@@ -320,18 +350,21 @@
       const btn = document.getElementById('submit-btn');
       btn.disabled = true;
       setMessage("返却処理を実行中...", "");
+      
+      // 同じ蔵書IDが複数あっても、そのまま配列として送る
+      // GAS側の processBulkReturn がループで1つずつ「未返却」を「返却済」に変えるため、
+      // IDが2つ入っていれば2つの記録が処理される
       const bookIds = returnQueue.map(b => b.bookId);
+      
       const res = await callGas('processBulkReturn', { bookIds: bookIds });
       if (res.success) {
         setMessage(res.message, "success");
-        //returnQueue = [];
-        //updateListUI();
-        document.getElementById('return-list-section').disabled = true;
+        // 完了後のUIロック
+        document.getElementById('return-list-section').style.opacity = "0.6";
         document.getElementById('scan-btn').disabled = true;
         document.getElementById('search-btn').disabled = true;
-        document.querySelectorAll('.remove-btn').forEach(x=>{
-        x.disabled = true;
-        });
+        document.querySelectorAll('.remove-btn').forEach(x => x.disabled = true);
+        btn.style.display = "none";
         autoScroll('close-button');
       } else {
         setMessage("エラー: " + res.message, "error");
@@ -354,27 +387,15 @@
       }, 100);
     }
 
-    // アプリを閉じる処理
     function closeApp() {
-      // 1. スクリプトで開かれた窓なら閉じる
-      const closed = window.close();
-      
-      // 2. 閉じられなかった場合のバックアップ案（履歴で戻るなど）
+      window.close();
       setTimeout(() => {
         if (!window.closed) {
-          setMessage("「閉じる」ボタンが制限されています。ブラウザのタブを手動で閉じてください。", "error");
-          // 履歴があれば戻る
-          if (window.history.length > 1) {
-            window.history.back();
-          }
+          setMessage("タブを閉じてください。", "error");
+          if (window.history.length > 1) window.history.back();
         }
       }, 500);
     }
   </script>
 </body>
 </html>
-
-
-
-
-
