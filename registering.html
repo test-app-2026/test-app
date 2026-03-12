@@ -32,8 +32,6 @@
     #search-button { background-color: #6c757d; margin-top: 10px; width: 100%; }
     .btn-action { width: 100%; background-color: #28a745; font-size: 20px; padding: 20px; margin-top: 10px; }
     
-    .button:disabled { background-color: #ccc; cursor: not-allowed; }
-
     #reset-button { width: 100%; background-color: #6c757d; font-size: 18px; padding: 15px; margin-top: 5px; }
     .btn-active { background-color: #dc3545 !important; }
     
@@ -266,10 +264,6 @@
           note: resNote.value.trim()
         };
         if (!data.title) { showStatusMessage('書籍名は必須です', 'error'); return; }
-        registerButton.disabeld = true:
-        bookidScanBtn.disabled = true;
-        isbnScanBtn.disabled = true;
-        searchButton.disbled = true;
         showStatusMessage('登録中...', '');
         try {
           const response = await fetch(GAS_URL, {
@@ -293,10 +287,6 @@
         bookidInput.value = ''; isbnInput.value = ''; resIsbn.value = '';
         resTitle.value = ''; resAuthor.value = ''; resPublisher.value = '';
         resPubdate.value = ''; resNote.value = '';
-        registerButton.disabeld = false:
-        bookidScanBtn.disabled = false;
-        isbnScanBtn.disabled = false;
-        searchButton.disbled = false;
         showStatusMessage('リセットしました', '');
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
@@ -312,4 +302,5 @@
 </body>
 
 </html>
+
 
