@@ -331,12 +331,12 @@
       section.style.display = 'block';
       listDiv.innerHTML = returnQueue.map((b, index) => `
         <div class="book-card">
-          <button class="remove-btn" onclick="removeFromQueue(${index})">取消</button>
-          ${b.isMultiple ? '<span class="multiple-badge">⚠️ 重複貸出記録</span>' : ''}
+          ${b.isMultiple ? '<span class="multiple-badge">⚠️ 重複</span>' : ''}
           <div><strong>📖 ${b.bookTitle}</strong></div>
           <div class="info-line">蔵書ID: ${b.bookId}</div>
           <div class="info-line">利用者: ${b.userName} さん</div>
           <div class="info-line">返却期限: ${b.dueDate}</div>
+          <button class="remove-btn" onclick="removeFromQueue(${index})">取消</button>
         </div>
       `).join('');
     }
