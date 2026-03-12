@@ -44,6 +44,13 @@
       filter: contrast(150%) brightness(110%) grayscale(100%);
       object-fit: cover;
     }
+
+    button:disabled {
+      background-color: #ccc !important;
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+    
   </style>
 </head>
 <body>
@@ -68,7 +75,7 @@
       <div class="form-group">
         <label for="isbn-input">ISBN：</label>
         <input type="text" id="isbn-input" placeholder="スキャンまたは入力">
-        <button id="search-button">書籍情報を取得</button>
+        <button id="search-button">書籍データを取得</button>
       </div>
     </div>
     
@@ -229,7 +236,7 @@
       });
 
       async function fetchBookInfo(isbn) {
-        showStatusMessage('書籍検索中...', '');
+        showStatusMessage('書籍データを検索中...', '');
         registerButton.scrollIntoView({ behavior: 'smooth', block: 'start' });
         try {
           const response = await fetch(GAS_URL, {
@@ -243,9 +250,9 @@
             resAuthor.value = book.authors || "";
             resPublisher.value = book.publisher || "";
             resPubdate.value = book.pubdate || "";
-            showStatusMessage('情報を取得しました', 'success');
+            showStatusMessage('書籍データを取得しました', 'success');
           } else {
-            showStatusMessage(book.error || '書籍が見つかりません', 'error');
+            showStatusMessage(book.error || '書籍データが見つかりません', 'error');
             resIsbn.value = isbn;
           }
         } catch (e) {
@@ -274,6 +281,10 @@
           if (res.success) {
             showStatusMessage(res.message, 'success');
             statusMsgArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            bookidScanBtn.disabled = true;
+            isbnScanBtn.disabled = true;
+            searchButton.disabled = true;
+            registerButton.disabled = true;
           } else {
             showStatusMessage(res.message, 'error');
             statusMsgArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -287,6 +298,10 @@
         bookidInput.value = ''; isbnInput.value = ''; resIsbn.value = '';
         resTitle.value = ''; resAuthor.value = ''; resPublisher.value = '';
         resPubdate.value = ''; resNote.value = '';
+        bookidScanBtn.disabled = false;
+        isbnScanBtn.disabled = false;
+        searchButton.disabled = false;
+        registerButton.disabled = false;
         showStatusMessage('リセットしました', '');
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
@@ -302,5 +317,3 @@
 </body>
 
 </html>
-
-
