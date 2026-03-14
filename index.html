@@ -82,9 +82,10 @@
       opacity: 0.95;
     }
     
-    .btn-lending { background-color: #007bff; }
-    .btn-returning { background-color: #28a745; }
-    .btn-register { background-color: #6c757d; }
+    .btn-lending { background-color: #FF6B6B; }
+    .btn-returning { background-color: #4e87cd; }
+    .btn-searching { background-color: #4ECDC4; }
+    .btn-register { background-color: #a5a5ae; }
     
     .footer {
       margin-top: auto;
@@ -103,36 +104,50 @@
     <div class="menu-grid">
       <!-- 貸出ページへのリンク -->
       <a href="https://test-app-2026.github.io/test-app/lending.html" class="menu-item btn-lending">
-        貸出
-        <span>本を借りる際はこちら</span>
+        貸 出
       </a>
       
       <!-- 返却ページへのリンク -->
       <a href="https://test-app-2026.github.io/test-app/returning.html" class="menu-item btn-returning">
-        返却
-        <span>本を返す際はこちら</span>
+        返 却
       </a>
 
       <!-- 蔵書検索ページへのリンク -->
-      <a href="https://test-app-2026.github.io/test-app/searching.html" class="menu-item btn-register">
-        蔵書検索
-        <span>本を探す</span>
+      <a href="https://test-app-2026.github.io/test-app/searching.html" class="menu-item btn-searching">
+        蔵 書 検 索
       </a>
       
       <!-- 蔵書登録ページへのリンク -->
-      <a href="https://test-app-2026.github.io/test-app/registering.html" class="menu-item btn-register">
-        蔵書登録
-        <span>新しい本を登録する</span>
+      <a href="#" class="menu-item btn-register" onclick="goToRegisterPage(event)">
+        蔵 書 登 録
+        <span>（管理者専用）</span>
       </a>
-    </div>
-    
-    <div class="footer">
-      &copy; 2025 Makuhari Sohgoh High School
+
+      <script>
+        function goToRegisterPage(event) {
+          // リンクのデフォルト動作（ページ遷移）を一旦止める
+          event.preventDefault();
+
+          // 1. パスワードを入力してもらう
+          const password = prompt("管理用パスワードを入力してください：");
+
+          // 2. キャンセルされた場合は何もしない
+          if (password === null || password === "") {
+            return;
+          }
+
+          // 3. 入力されたパスワードをファイル名としてURLを作成
+          // 例: password が "admin777" なら "admin777.html" に飛ぶ
+          const targetUrl = `https://test-app-2026.github.io/test-app/${password}.html`;
+
+          // 4. そのURLへジャンプ
+          window.location.href = targetUrl;
+        }
+      </script>
+
+<div class="footer">
+      &copy; 2025 Makuhari Sogo High School
     </div>
   </div>
 </body>
 </html>
-
-
-
-
