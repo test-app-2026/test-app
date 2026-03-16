@@ -18,8 +18,8 @@
     
     .button-container { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
     button { color: white; padding: 15px 20px; border: none; border-radius: 12px; cursor: pointer; font-size: 16px; font-weight: 700; background-color: #0056b3; flex: 1; }
-    .btn-action { width: 100%; background-color: #28a745; font-size: 20px; padding: 20px; margin-top: 10px; }
-    #reset-button { width: 100%; background-color: #6c757d; font-size: 18px; padding: 15px; margin-top: 5px; }
+    .btn-action { width: 100%; background-color: #4ecd9a; font-size: 20px; padding: 20px; margin-top: 10px; }
+    #reset-button { width: 100%; background-color: #969a9e; font-size: 18px; padding: 15px; margin-top: 5px; }
     
     /* 検索結果テーブルのスタイル */
     .result-area { margin-top: 30px; }
@@ -64,8 +64,8 @@
         <thead>
           <tr>
             <th style="width: 25%;">蔵書ID</th>
-            <th>書籍名</th>
-            <th style="width: 25%;">状況</th>
+            <th>タイトル</th>
+            <th style="width: 25%;">状態</th>
           </tr>
         </thead>
         <tbody id="result-body"></tbody>
@@ -132,7 +132,7 @@
       
       data.forEach(book => {
         const row = resultBody.insertRow();
-        const statusClass = book.status === '在庫有' ? 'status-available' : 'status-loaned';
+        const statusClass = book.status === '貸出可' ? 'status-available' : 'status-loaned';
         
         row.innerHTML = `
           <td>${book.id}</td>
